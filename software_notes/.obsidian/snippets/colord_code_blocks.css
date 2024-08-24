@@ -1,0 +1,22 @@
+/* Custom background color for first type of code blocks */
+.green_code_block{
+    background-color: #141417; /* Light gray */
+	color: #a8a8ff;
+    border-radius: 3px;
+	font-family: 'Consolas', 'Courier New', Courier, monospace;
+	font-size: 14px;
+}
+
+/* Custom background color for second type of code blocks */
+.Yallow_code_block {
+    background-color: #0e1f0e; /* Light gray */
+	color: #faff8a;
+    border-radius: 3px;
+	font-family: 'Consolas', 'Courier New', Courier, monospace;
+	font-size: 14px;
+}
+
+.highlight {
+	background-color: #92b2b3;
+	color: #302020;
+}
