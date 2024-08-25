@@ -1,0 +1,7 @@
+{
+  "theme": "obsidian",
+  "enabledCssSnippets": [
+    "style",
+    "colord_code_blocks"
+  ]
+}

@@ -1,4 +1,4 @@
-مكتبه بايثون بتتعامل مع قواعد بيانات `mysql`  عن طريق أكواد بايثون.
+مكتبه بايثون بتتعامل مع قواعد البيانات  عن طريق أكواد بايثون.
 ### تنزيل وإستيراد المكتبة
 هنزل المكتبه من خلال `pip3` كعادة كل مكتبات بايثون
 ```shell
@@ -11,7 +11,7 @@ $ pip3 install SQLAlchemy
 '2.0.32'
 ```
 ### إنشاء إتصال لقاعدة بيانات
- عشان تستعمل `sqlalchemy` لازم أولا  تعمل `Engine` ودا هو بداية كل كل عمليه علي أي قاعدة بيانات.
+ عشان تستعمل `sqlalchemy` لازم أولا  تعمل `Engine` ودا هو بداية  كل عمليه علي أي قاعدة بيانات.
  ال`Engin` عباره عن كائن بيتصل بقاعدة بيانات معيه فقط وبيكون جواه مجموعه من ال `connection pool` مخصصه للتعامل مع قاعدة البيانات دي فقط.
  نقدر نعمل الكائن دا من خلال الفانشكن `create_engine()`  ودا هترجعلنا `instance` من الكائن `Engine`
  ```python
@@ -20,13 +20,14 @@ $ pip3 install SQLAlchemy
 ```
 السطر  `sqlite+pysqlite:///:memory:` بيدلنا علي تلات حجات مهمين
 1. ايه نوع قاعدة البيانات اللي بنتعامل معاها، وهنا احنا كتبنا `sqlite` 
-2. إيه نوع الDPAPI اللي بنتصل بيه، وهنا حددنا انه `pysqlite` وهو نوع معين من ال DPAPI اللي بيستعمل بين بايثون و`sqlite`
+2. إيه نوع ال `DPAPI` اللي بنتصل بيه، وهنا حددنا انه `pysqlite` وهو نوع معين من ال `DPAPI` اللي بيستعمل بين بايثون و`sqlite`
 3. ازاي نحدد نوقع قاعده البيانات، وهنا احتبنا `memory` عشان نخليها مباشرة علي الذاكرة من غير ماانعمل أي فايلات ودا مناسب للتجارب.
-وأخيرا احنا خلينا `echo` عشان بايثون تروينا الكود الأصلي اللي بيتبعت لsql
+وأخيرا احنا خلينا `echo` عشان بايثون تروينا الكود الأصلي اللي بيتبعت ل `sql`
+القاعدة الأصليه لبناء أي `url` إتصال هي: `dialect+driver://username:password@host:port/database`
 
 ### التعامل مع قاعدة البيانات
 من بعد ماجهزنا الكائن `engine` كدا احنا بقينا جاهزين اننا نفعل `connection` علي قاعدة البيانات وبعدين نتعامل معاها
-وعشان نبداء نفعل `connection` علي ال `engine` هنستعمل `context_maneger` بحيث منودعجش دماغنا باننا نقفله بعدين.
+وعشان نبداء نفعل `connection` علي ال `engine` هنستعمل `context_maneger` بحيث منوجعش دماغنا باننا نقفله بعدين.
 
 ```python
 >>> with engine.connect() as conn:
@@ -36,15 +37,15 @@ $ pip3 install SQLAlchemy
 ```
 
 ```output
-2024-08-23 18:33:55,343 INFO sqlalchemy.engine.Engine BEGIN (implicit)
-2024-08-23 18:33:55,343 INFO sqlalchemy.engine.Engine select 'hello world'
-2024-08-23 18:33:55,343 INFO sqlalchemy.engine.Engine [generated in 0.00033s] ()
+ INFO sqlalchemy.engine.Engine BEGIN (implicit)
+ INFO sqlalchemy.engine.Engine select 'hello world'
+ INFO sqlalchemy.engine.Engine [generated in 0.00033s] ()
 [('hello world',)]
-2024-08-23 18:33:55,345 INFO sqlalchemy.engine.Engine ROLLBACK
+ INFO sqlalchemy.engine.Engine ROLLBACK
 ```
-كل اللي عملناه هنا ببساطه اننا بعتنا كويري مجرده لقاعده البيانات ورجعلنا اللي طلبنا في صيغه `list` ولكن لاحظ بسبب ال`echo=True` اللي حطناها واحنا بنععمل ال `engine` الداتا بتظهرلنا في الاوتبوت باللي بيبعته المحرك للقاعدة البيانات
+كل اللي عملناه هنا ببساطه اننا بعتنا `qurey` مجرده لقاعده البيانات ورجعلنا اللي طلبنا في صيغه `list` ولكن لاحظ بسبب ال`echo=True` اللي حطناها واحنا بنععمل ال `engine` الداتا بتظهرلنا في الاوتبوت باللي بيبعته المحرك للقاعدة البيانات
 ووظيفه ال `ROLLBACK` في اخر سطر انه مش بيعمل `commit` للداتا وبالتالي مش بتتحفظ في قاعدة البيانات
-لو كنا عايزين نعمل `commit` للبيانات اللي بنعمل، فتعال نجرب نعمل جدول وبعدين نعمله `commit`
+لو كنا عايزين نعمل `commit` للبيانات، فتعال نجرب نعمل جدول وبعدين نعمله `commit`
 ```python
 >>> with engine.connect() as conn:
 ...     conn.execute(text("CREATE TABLE some_table (x int, y int)"))
@@ -63,7 +64,7 @@ $ pip3 install SQLAlchemy
  <sqlalchemy.engine.cursor.CursorResult object at 0x7f4d45e7d580>
  INFO sqlalchemy.engine.Engine INSERT INTO some_table (x, y) VALUES (?, ?)
  INFO sqlalchemy.engine.Engine [generated in 0.00057s] [(1, 1), (2, 4)]
-<sqlalchemy.engine.cursor.CursorResult object at 0x7f4d45e7d5e0>
+ <sqlalchemy.engine.cursor.CursorResult object at 0x7f4d45e7d5e0>
  INFO sqlalchemy.engine.Engine COMMIT
 ```
 كدا احنا عملنا 2 كوماند، الأول عملنا فيه جدول مكون من x و y، وبعدين عبينا في الجدول بيانات بقيم 1،1 و 2،4 وعشان نحفظ البيانات عملنا `commit` عللي ال`conntion
@@ -107,7 +108,7 @@ x: 9  y: 10
  INFO sqlalchemy.engine.Engine ROLLBACK
 ```
 
-الكائن `result` عباره عن `tuple` بكل البيانات اللي رجعتها الexec، وفي طرق كتير نقدر نستخرج بيها البيانات من الكائن دا منها:
+الكائن `result` عباره عن `tuple` بكل البيانات اللي رجعتها ال `exec`، وفي طرق كتير نقدر نستخرج بيها البيانات من الكائن دا منها:
 1. تفكيك ال`tuple` ودا عباره عن انك تفكك التابل في متغيرات وتطبعها:
 ```python
 result = conn.execute(text("select x, y from some_table"))
@@ -149,8 +150,8 @@ with Session(engine) as session:
     session.commit()
 ```
 ### تكوين قاعدة البيانات
-عشان نعرف نكون قاعدة البيانات بيستعمال ال `ORM` ، عادة ماهنوصف الجداول والبيانات اللي مفروض تكون في الصفوف في هيئة `classes` 
-والمهمه دي عادة هتم من خلال إنشاء `instance` من ال `declartive_base` والتطبيق غالبا مش هيحتاح غير عنصر واحد بس منه وعدد من ال `classes` تساوي عدد الجداول.
+عشان نعرف نكون قاعدة البيانات بيستعمال ال `ORM` ، عادة ماهنوصف الجداول والأعمده اللي مفروض  في هيئة `classes` 
+والمهمه دي عادة هتم من خلال إنشاء `instance` من ال `declartive_base` والتطبيق غالبا مش هيحتاح غير عنصر واحد بس منه، وهتورث منه عدد من ال `classes` تساوي عدد الجداول اللي عايز تعملها.
 نبداء نستورد الكلاس من خلال.
 ```python
 from sqlalchemy.ext.declarative import declarative_base
@@ -184,14 +185,14 @@ from sqlalchemy import (
 ```
 في  قيود ممكن تفعلها في كل `Column` زي `mysql` بالظبط واللي موضحه في الجدول الجاي
 ```python
-id = Column(Integer, primary_key=True)
+id = Column(Integer, primary_key=True, autoincrement=True)
 name = Column(String, nullable=False)
 email = Column(String, unique=True)
 status = Column(String, default='active')
 ```
 وأخيرا ال `__reper__`  برتجعلنا وصف لكل كائن من الكلاس، بمعني اخر قيم كل صف في الجول
 
-بما أنو الجدول اللي عرفناه للتو وارص من `Base` كلاس فف أي وقت نقدر نوصفه
+بما أنو الجدول اللي عرفناه للتو وارث من ال `Base` كلاس ففي أي وقت نقدر نوصفه
 ```python
 User.__table__
 ```
@@ -204,7 +205,7 @@ Table('users', MetaData(bind=None),
             Column('nickname', String(), table=<users>), schema=None)
 ```
 
-بعد وصف الجداول والأعمده حان وقت السحر
+بعد تكوين الجداول والأعمده حان وقت السحر
 ```python
 Base.metadata.create_all(engine)
 ```
@@ -242,7 +243,7 @@ Session.configure(bind=engine)
 ```python
 session = Session()
 ```
-الكائن `Session` مربوط باقاعدة البيانات بتاعتنا وكل لما بنيجي نستنسخ منه بيرجع `connection` ويفضل متمسك بيها لحد ما نعمل `commit` أون ننهي الكائن `session` 
+الكائن `Session` مربوط باقاعدة البيانات بتاعتنا وكل لما بنيجي نستنسخ منه بيرجع `connection` ويفضل متمسك بيها لحد ما نعمل `commit` أون ننهي الكائن `session` عن طريق `session.close()`
 
 نبداء نضيف نسخنا من الكلاس `users` واللي بتمثل الصفوف إلي ال `session`
 ```python
@@ -277,3 +278,290 @@ WHERE users.name = ?
  >>> ed_user is our_user
 True
 ``` 
+للعلم `sqlalchemy` بمجرد مابتتعرف علي كائن في ال `session` مينقعش يتكرر، ودا عشان `sqlalchemjy` مراقبه كل الكائنات اللي عندها ولو حصل أي إضافة أو تغيير بتعرف علي طول
+```python
+session.add_all([
+    User(name='wendy', fullname='Wendy Williams', nickname='windy'),
+    User(name='mary', fullname='Mary Contrary', nickname='mary'),
+    User(name='fred', fullname='Fred Flintstone', nickname='freddy')])
+```
+هنا ضفنا شويه كائنات جديد من جدولنا لل `session` وكماان غيرنا قيمه  `nickname` للكائن القديم بتاعنا
+```python
+ed_user.nickname = 'eddie'
+```
+لاحظ أنو علي طول ال `session` لاحظت التغيرات
+```python
+>>> session.dirty
+IdentitySet([<User(name='ed', fullname='Ed Jones', nickname='eddie')>])
+>>> session.new  
+IdentitySet([<User(name='wendy', fullname='Wendy Williams', nickname='windy')>,
+<User(name='mary', fullname='Mary Contrary', nickname='mary')>,
+<User(name='fred', fullname='Fred Flintstone', nickname='freddy')>])
+```
+ويلا بينا ن `commit` التعديلات والإضافات الجديدة
+```python
+sesseion.commit()
+```
+### البحث  عن البيانات
+اي كويري هتعملها هتستعمل فيها الميثود `query()` بالإضافة إلي بعض ميثود التصفيات والترتيب
+ في `query()` هتذكر **البيانات اللي انت عايز ترجعها** أو اسم **الجدول لو انت عايز البيانات بالكامل**
+في الحاله الأولي الفانكشن هترجع `tuple` بالبيانات وفي الحاله التانيه الفانكشن هترجع الكائن كلو
+```python
+>>> for instance in session.query(User).order_by(User.id):
+...     print(instance.name, instance.fullname)
+
+ed Ed Jones
+wendy Wendy Williams
+mary Mary Contrary
+fred Fred Flintstone
+```
+
+```python
+>>> for name, fullname in session.query(User.name, User.fullname):
+...     print(name, fullname)
+
+SELECT users.name AS users_name,
+        users.fullname AS users_fullname
+FROM users
+()
+
+ed Ed Jones
+wendy Wendy Williams
+mary Mary Contrary
+fred Fred Flintstone
+```
+وتقدر تصفي النتائج بستعمال `filter()` 
+```python
+>>> for name, in session.query(User.name).\
+...             filter(User.fullname=='Ed Jones'):
+...    print(name)
+```
+وتقدر تصفي اكتر من مره بناء علي اكتر من عامل
+```python
+>>> for user in session.query(User).\
+...          filter(User.name=='ed').\
+...          filter(User.fullname=='Ed Jones'):
+...    print(user)
+```
+
+```python
+query.filter(User.name == 'ed', User.fullname == 'Ed Jones')
+```
+وتقدر كمان تصفي بناء علي اكتر من قيمه لنفس العامل بإستعمال `in_()`
+```python
+query.filter(User.name.in_(['ed', 'wendy', 'jack']))
+
+# تقدر كمان تباصي جواها كيوري
+query.filter(User.name.in_(
+    session.query(User.name).filter(User.name.like('%ed%'))
+))
+```
+تقدر بقا بعدين تقرر انت عايز تستلم كام قيمه من النتيجه بإستعمال:
+1. لو عايز كل القيم 
+```python
+>>> query = session.query(User).filter(User.name.like('%ed')).order_by(User.id)
+>>> query.all()
+```
+2.  لو عايز أول قيمه بس
+```python
+query.first()
+```
+3. لو عايز عدد معين من القيم
+```python
+query.all()[1:3]
+```
+### تطبيق عملي
+هنبداء نعمل داتا بيز متكامله وهنعمل عليها معظم ال`queris` اللي احنا عرفينا
+كالعادة نبداء بستيراد المكتبة 
+```python
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+```
+ومن ثم ننشء نسخه من الكلاس `declarative_base` ونورث من كل الجداول بتاعتنا .
+```python
+Base = declarative_base()
+
+# Define classes aka Tables
+class Games(Base):
+    __tablename__ = 'games'
+
+class Players(Base):
+    __tablename__ = 'players'
+
+class Records(Base):
+    __tablename__ = 'records'
+```
+هنعمل تلات جداول:
+1. جدول `players` هنخزن فيه بيانات الاعبين:
+	- عمود `id` رقم برايمري كاي ومينفعش يبفي ب `null` و بيزيد اوتوماتيكلي
+	- عمود `name` نص عبارة عن 128 حرف ومنفعش يبفي ب `null`
+	- عمود `age` رقم مينفعش يبقي ب `null`
+
+2. جدول `games` هنخزن فيه بيانات الألعاب:
+	- عمود `id` رقم برايمري كي ومينفعش يبقي ب `null` وبزيد اوتوماتيكلي
+	- عمود `name` نص عبارة عن 128 حرف ومنفعش يبفي ب `null`
+
+3. جدول `records` هنخزن فيه بيانات الاعبين والألعاب اللي بيلعبوها
+	- عمود `player_id` رقم عبارة عن `foregin key` من العمود  `players.id`
+	- عمود `game_id` رقم عبارة عن `foregin key` من العمود `game_id`
+ ```python
+from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, Integer, String, ForeignKey
+
+Base = declarative_base()
+
+
+class Games(Base):
+    __tablename__ = 'games'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(128), nullable=False)
+
+    def __repr__(self):
+        return "[<class>:{}, id: {}, name: {}]".format(
+                self.__class__.__name__, self.id, self.name)
+
+
+class Players(Base):
+    __tablename__ = 'players'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(128), nullable=False)
+    age = Column(Integer, nullable=False)
+
+    def __repr__(self):
+        return "[<class>:{}, id: {}, name: {}, age: {}]".format(
+                self.__class__.__name__, self.id, self.name, self.age)
+
+
+class Records(Base):
+    __tablename__ = 'records'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    player_id = Column(Integer, ForeignKey('players.id'))
+    game_id = Column(Integer, ForeignKey('games.id'))
+```
+نقدر دلوقتي ناخد الكلام دا في فايل ويكون اسمه مثلا `mapped_models.py` 
+#### إنشاء الجداول
+حتي هذه المرحله احنا كدا خلصنا البيانات الأساسه وعملنالها `mapp` للكلاسات ودلوقتي جه وقت انو يبقي ليها لازمه.
+في `mysql` هخش وأعمل قاعدة بيانات جديدة أسمها `gaming` كمان هعمل مستخدم جديد وهديله باسورد كل الصلاحيات علي القاعدة دي .
+```mysql
+CREATE DATABASE IF NOT EXISTS gaming;
+CREATE USER IF NOT EXISTS 'ehab'@'localhost' IDENTIFIED BY 'ehabw57';
+GRANT ALL PRIVILEGES ON gaming.* TO 'ehab'@'localhost';
+GRANT SELECT ON performance_schema.* TO 'ehab'@'localhost';
+```
+هنجفظ دول في ملف ونسميه `setup.sql` وبعدين نبعت الفايل ل `mysql`
+```bash
+root@6508b8926b79:/home/ehabw57/games_dev >> cat setup.sql | mysql
+root@6508b8926b79:/home/ehabw57/games_dev >> echo "SHOW DATABASES;" | mysql | grep gaming
+gaming
+root@6508b8926b79:/home/ehabw57/games_dev >> echo "SHOW GRANTS FOR 'ehab'@'localhost';" | mysql
+Grants for ehab@localhost
+GRANT USAGE ON *.* TO `ehab`@`localhost`
+GRANT ALL PRIVILEGES ON `gaming`.* TO `ehab`@`localhost`
+GRANT SELECT ON `performance_schema`.* TO `ehab`@`localhost`
+root@6508b8926b79:/home/ehabw57/games_dev >>
+```
+ودلوقتي هنشغل `python3`:
+نستورد كل الكلاسات اللي عملناها في الملف `mapped_models` 
+والفانكشن `create_engine`
+وننشي ال `engine` الللطيف بتاعنا ببيانات المستخدم الليي عملناه 
+وننشئ الجداول  بتاعتنا .
+```python
+>>> from mapped_models import *
+>>> from sqlalchemy import create_engine
+>>> engine = create_engine("mysql://ehab:ehabw57@localhost/gaming")
+>>> engine
+Engine(mysql://ehab:***@localhost/gaming)
+>>> Base.metadata.create_all(engine)
+```
+ودلوقتي خلينا نرجع نتأكد أنو الجداول بتاعتنا اتعملت فعلا
+```bash
+root@6508b8926b79:/home/ehabw57/games_dev >> echo "SHOW TABLES;" | mysql gaming
+Tables_in_gaming
+games
+players
+records
+root@6508b8926b79:/home/ehabw57/games_dev >>
+```
+**ملحوظه**: لو شغلت `Base.metadata.create_all(engine)` والجداول بالفعل معموله، فمش هيكون ليها أي تأثير وهيتم تجاهلها.
+#### إنشاء صفوف جديدة
+علي قد ما أنا حابب المرحله اللي وصلناها ولكن مش مبسوط انو جداولنا فاضيه فتعال نضيف صفوف فيها من خلال اننا نعمل كائنات من الكلاسات بتاعتنا
+في بايثون هبدأ أعمل كائانات من الكلاسات بتاعتنا.
+```python
+>>> from mapped_models import Players, Games, Records
+>>> ehab = Players(name='Ehab', age=24)
+>>> nutty = Players(name='Nutty', age=25)
+>>> layla = Players(name='Layla', age=21)
+>>> ahmed = Players(name='Ahmed', age=19)
+```
+ومن ثم بعدها هعمل ال `engine` وبعدين أعمل الكائن `session` وأربطه با `engine` بتاعي
+```python
+>>> from sqlalchemy import create_engine
+>>> engine = create_engine("mysql://ehab:ehabw57@localhost/gaming")
+>>> from sqlalchemy.orm import sessionmaker
+>>> Session = sessionmaker(bind=engine)
+>>> session = Session()
+```
+تضيف بقا كل الكائنات اللي عملناها لل `session`
+```python
+>>> session.add_all([ehab, nutty, layla, ahmed])
+```
+ومن ثم نعمل `commit` عشان نبعت البيانات للقاعدة 
+```python
+>>> session.commit()
+```
+واخيرا نتأكد انو البيانات أضافت للقاعدة
+```bash
+root@6508b8926b79:/home/ehabw57/games_dev $ echo "SELECT * FROM gaming.players;" | mysql
+id	name	age
+1	Ehab	24
+2	Nutty	25
+3	Layla	21
+4	Ahmed	19
+root@6508b8926b79:/home/ehabw57/games_dev $
+```
+وبما انو احنا فيها يلا نضيف شويه ألعاب للجدول `games`
+```python
+>>> session.add_all([Games(name='Genshin_impact'),
+...             Games(name='Mobile_legends'),
+...             Games(name="Pubge"),
+...             Games(name="Leauge_of_legends"),
+...             Games(name="Among_us")])
+>>> session.commit()
+>>>
+```
+
+```bash
+root@6508b8926b79:/home/ehabw57/games_dev $ echo "SELECT * FROM gaming.games;" | mysql
+id	name
+1	Genshin_impact
+2	Mobile_legends
+3	Pubge
+4	Leauge_of_legends
+5	Among_us
+root@6508b8926b79:/home/ehabw57/games_dev $
+```
+ويلا نضيف شويه قيم عشوائيه كمان لل `records`
+**ملاحظه**: وانت بضيف قيم ال `game_id` وال `player_id` إتأكد انها مابين 1 إلي 4  و ال 1 إلي 5 عشان الجدول دا أعمدته عبارة عن `forigen key` من الجدولين التانيين
+```python
+>>> session.add_all([
+...          Records(game_id=2, player_id=4),
+...          Records(game_id=1, player_id=3),
+...          Records(game_id=4, player_id=3),
+...          Records(game_id=4, player_id=1),
+...          Records(game_id=4, player_id=3)])
+>>> session.commit()
+```
+
+```bash
+root@6508b8926b79:/home/ehabw57/games_dev $ echo "SELECT * FROM gaming.records;" | mysql
+id	player_id	game_id
+1	4	2
+2	3	1
+3	3	4
+4	1	4
+5	3	4
+root@6508b8926b79:/home/ehabw57/games_dev $
+```
