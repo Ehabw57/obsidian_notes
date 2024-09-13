@@ -370,7 +370,20 @@ query.first()
 ```python
 query.all()[1:3]
 ```
+####  أنواع الكويري:
+في مجموعه من الحجات اللي ممكن تضيفها للميثود `query`  شبه اللي في `mysql`:
+
+1. ال count()
+شبهه ال `count()` في  `mysql` ودي بترجع عدد ال `objects` اللي رجعت في الكويري
+2. ال  delete()
+ودي بتمسح كل الكائنات اللي رجعت في الكويري من القاعدة `session.query(Table_bname).delete()` 
+3. ال filter() و ال order_by()
+ودي سبق ذكرها فوق
+4. ال join()
+ ودي صيغتها كالتالي `session.query.join(target, *props, **kwargs)`
 ### تطبيق عملي
+في التطبيق العملي دا هنعمل داتا بيز بسيطه مكونه من تلات جداول عن عالم الألعاب
+#### إنشاء كلاسات الجداول:
 هنبداء نعمل داتا بيز متكامله وهنعمل عليها معظم ال`queris` اللي احنا عرفينا
 كالعادة نبداء بستيراد المكتبة 
 ```python
@@ -442,7 +455,8 @@ class Records(Base):
     game_id = Column(Integer, ForeignKey('games.id'))
 ```
 نقدر دلوقتي ناخد الكلام دا في فايل ويكون اسمه مثلا `mapped_models.py` 
-#### إنشاء الجداول
+
+#### مسخدم جديد وقاعدة بيانات جديده:
 حتي هذه المرحله احنا كدا خلصنا البيانات الأساسه وعملنالها `mapp` للكلاسات ودلوقتي جه وقت انو يبقي ليها لازمه.
 في `mysql` هخش وأعمل قاعدة بيانات جديدة أسمها `gaming` كمان هعمل مستخدم جديد وهديله باسورد كل الصلاحيات علي القاعدة دي .
 ```mysql
@@ -463,11 +477,13 @@ GRANT ALL PRIVILEGES ON `gaming`.* TO `ehab`@`localhost`
 GRANT SELECT ON `performance_schema`.* TO `ehab`@`localhost`
 root@6508b8926b79:/home/ehabw57/games_dev >>
 ```
+
+#### إنشاء المحرك engine:
 ودلوقتي هنشغل `python3`:
 نستورد كل الكلاسات اللي عملناها في الملف `mapped_models` 
 والفانكشن `create_engine`
 وننشي ال `engine` الللطيف بتاعنا ببيانات المستخدم الليي عملناه 
-وننشئ الجداول  بتاعتنا .
+وأخيرا ننشئ الجداول  بتاعتنا .
 ```python
 >>> from mapped_models import *
 >>> from sqlalchemy import create_engine
@@ -504,7 +520,7 @@ root@6508b8926b79:/home/ehabw57/games_dev >>
 >>> Session = sessionmaker(bind=engine)
 >>> session = Session()
 ```
-تضيف بقا كل الكائنات اللي عملناها لل `session`
+نضيف بقا كل الكائنات اللي عملناها لل `session` علي هيئة `list`
 ```python
 >>> session.add_all([ehab, nutty, layla, ahmed])
 ```
@@ -564,4 +580,127 @@ id	player_id	game_id
 4	1	4
 5	3	4
 root@6508b8926b79:/home/ehabw57/games_dev $
+```
+#### إسترداد البيانات
+بإعتبار اننا قفلنا جلسه بايثون اللي كنا فاتحينها، هنبداء نعمل واحدة جديدة
+```bash
+root@6508b8926b79:/home/ehabw57 $ python3
+```
+هنبداء نعمل نفس خطواتنا القديمه من أننا نستورد المودلز و نعمل ال`engine` وال `session`
+```python
+>>> from sqlalchemy import create_engine
+>>> engine = create_engine("mysql://ehab:ehabw57@localhsot/gaming")
+>>> from mapped_models import *
+>>> from sqlalchemy.orm import sessionmaker
+>>> Session = sessionmaker(bind=engine)
+>>> session = Session()
+```
+خلي في بالك انو حتي الان دي الهيئة الي وصلتلها جداولنا
+1. جدول `players`:
+
+| id  | name  | age |
+| :-: | :---: | :-: |
+|  1  | Ehab  | 24  |
+|  2  | Nutty | 25  |
+|  3  | Layla | 21  |
+|  4  | Ahmed | 19  |
+2. جدول ال `games`:
+
+
+| id  |       name        |
+| :-: | :---------------: |
+|  1  |  Genshin_impact   |
+|  2  |  Mobile_legends   |
+|  3  |       Pubge       |
+|  4  | Leauge_of_legends |
+|  5  |     Among_us      |
+3. جدول ال  `records`
+
+| id  | player_id | game_id |
+| :-: | :-------: | :-----: |
+|  1  |     4     |    2    |
+|  2  |     3     |    1    |
+|  3  |     3     |    4    |
+|  4  |     1     |    4    |
+|  5  |     3     |    4    |
+1   جيب كل الصفوف اللي في جدول الاعبين
+2  جيب أسماء الاعبين اللي عمرهم اكبر من 21 سنه
+3 جيب أسماء الألعاب اللي اخر كلمه فيها `legends`
+4 جيب الاعبين وأسماء الالعاب اللي بيلعبوها
+5 جيب أسماء الاعبين وعدد الألعاب اللي بيلعبوها
+6 جيب أسماء الألعاب وعدد الاعبين اللي بيلعبوها ( حتي الألعاب اللي محدش بيلعبها )
+
+
+
+
+
+
+ودلوقتي هنسترد شويه بيانات:
+1 - عايزين نجيب كل الصفوف اللي في جدول الاعبين
+```python
+>>> result = session.query(Players).all()
+>>> for obj in result:
+...     print(obj)
+...
+[<class>:Players, id: 1, name: Ehab, age: 24]
+[<class>:Players, id: 2, name: Nutty, age: 25]
+[<class>:Players, id: 3, name: Layla, age: 21]
+[<class>:Players, id: 4, name: Ahmed, age: 19]
+```
+2. نجيب أسماء الاعبين اللي عمرهم اكبر من 21 سنه
+```python
+>>> result = session.query(Players).filter(Players.age > 21).all()
+>>> for obj in result:
+...     print(obj)
+...
+[<class>:Players, id: 1, name: Ehab, age: 24]
+[<class>:Players, id: 2, name: Nutty, age: 25]
+```
+3. نجيب أسماء الألعاب اللي اخر كلمه فيها `legends`
+```python
+>>> result = session.query(Games).filter(Games.name.like("%legends")).all()
+>>> for obj in result:
+...     print(obj)
+...
+[<class>:Games, id: 2, name: Mobile_legends]
+[<class>:Games, id: 4, name: Leauge_of_legends]
+```
+4. نجيب الاعبين وأسماء الالعاب اللي بيلعبوها
+```python
+>>> result = session.query(Players.name, Games.name, Players.age)\
+... .join(Records, Players.id == Records.player_id)\
+... .join(Games, Records.game_id == Games.id).all()
+>>> for obj in result:
+...     print(obj)
+...
+('Ahmed', 'Mobile_legends', 19)
+('Layla', 'Genshin_impact', 21)
+('Layla', 'Leauge_of_legends', 21)
+('Ehab', 'Leauge_of_legends', 24)
+('Layla', 'Leauge_of_legends', 21)
+```
+5. نجيب أسماء الاعبين وعدد الألعاب اللي بيلعبوها
+```python
+>>> from sqlalhcemy import func
+>>> result = session.query(Players.name, func.count(Records.game_id))\
+ 		.join(Players, Records.player_id == Players.id).group_by(Records.player_id).all()
+>>> for re in result:
+...     print(re)
+...
+('Ahmed', 1)
+('Layla', 3)
+('Ehab', 1)
+```
+6. نجيب أسماء الألعاب وعدد الاعبين اللي بيلعبوها حتي الألعاب اللي محدش بيلعبها 
+```python
+>>> result = session.query(Games.name, func.count(Records.player_id))\
+ 		.outerjoin(Records, Games.id == Records.game_id).group_by(Games.name).all()
+>>> for re in result:
+...     print(re)
+...
+('Genshin_impact', 1)
+('Mobile_legends', 1)
+('Pubge', 0)
+('Leauge_of_legends', 3)
+('Among_us', 0)
 ```
